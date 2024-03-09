@@ -1,8 +1,8 @@
 import { products } from "../db.js";
 
-import  Product  from "../models/productSchema.js";
+import Product from "../models/productSchema.js";
 
-//Mongoose provide a set of methods(create, find, save,findByIdAndUpdate...etc) that allow you to perform CRUD. 
+//Mongoose provide a set of methods(create, find, save,findByIdAndUpdate...etc) that allow you to perform CRUD.
 
 export const getAllProduct = async (req, res, next) => {
   const allprod = await Product.find();
@@ -17,15 +17,18 @@ export const getProductById = async function (req, res, next) {
 
   //destructuring
   const { id } = req.params;
-  try{
+  try {
     const product = await Product.findById(id);
-    res.json(product);
-
-  }catch(error){
+    if (product) {
+      res.json(product);
+    } else {
+      // if someone try to temper with id, we sent custom message to Error Middleware
+      next(new Error("Product Not Found"));
+    }
+  } catch (error) {
+    // console.log(error);
     next(error);
-
   }
-
 };
 
 export const createNewProduct = async function (req, res, next) {
@@ -34,7 +37,7 @@ export const createNewProduct = async function (req, res, next) {
 
   try {
     //product create krne pr error aane ke chanse hai,isliye ise try-catch me rakha.
-    //Mongoose provide a set of methods(create, find, save,findByIdAndUpdate...etc) that allow you to perform CRUD. 
+    //Mongoose provide a set of methods(create, find, save,findByIdAndUpdate...etc) that allow you to perform CRUD.
     //create and save a new document in a single step.
     const createprod = await Product.create(newProduct);
 
@@ -42,16 +45,12 @@ export const createNewProduct = async function (req, res, next) {
     res.json({
       product: createprod,
     });
-
   } catch (error) {
-    
     next(error);
   }
-
 };
 
 export const updateProduct = async function (req, res, next) {
-
   const { id } = req.params;
   console.log(id);
   const updateProduct = req.body;

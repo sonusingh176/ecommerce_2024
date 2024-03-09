@@ -17,8 +17,9 @@ export const errorMiddleware=(err, req, res, next) => {
     }
   
     //Handling Wrong Object ID Error
-    if (err.name === "castError") {
-      const message = `Resource not found. Invalid :${err.path}`;
+    if (err.name === "CastError") {
+      
+     const message = `Resource not found. Invalid :${err.path}`;
       error = new Error(message);
     }
   
